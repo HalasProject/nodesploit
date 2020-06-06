@@ -1,5 +1,5 @@
 <p align="center">
-   <img width="160px" height="160px" src="https://i.ibb.co/txm3d2q/nodesploit.png" />
+   <img width="170px" height="160px" src="https://i.ibb.co/txm3d2q/nodesploit.png" />
 </p>
 
 

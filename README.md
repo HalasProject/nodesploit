@@ -1,5 +1,5 @@
 <p align="center">
-   <img width="160px" height="160px" src="https://raw.githubusercontent.com/HalasProject/nodesploit/master/src/renderer/assets/nodesploit.png?token=AKUVV673P24HBRHBHSXMW5K63L2OS" />
+   <img width="160px" height="160px" src="https://i.ibb.co/txm3d2q/nodesploit.png" />
 </p>
 
 

@@ -37,7 +37,7 @@
       </v-btn>
     </v-app-bar>
 
-    <v-content >
+    <v-content>
       <keep-alive>
         <router-view></router-view>
       </keep-alive>
@@ -81,13 +81,7 @@ export default {
     }
   },
   mounted() {
-    ipcRenderer.on("closeConnection", (event, socket) => {
-      this.$vs.notification({
-        title: "Connection closed",
-        text: `These documents refer to the latest version of vuesax (4.0+),
-            to see the documents of the previous versions you can do it here 👉 Vuesax3.x`
-      });
-    });
+    ipcRenderer.on("closeConnection", (event, socket) => {});
     ipcRenderer.on("listened", (event, port) => {
       this.$store.dispatch("LISTENED", port);
     });

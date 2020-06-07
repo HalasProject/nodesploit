@@ -6,7 +6,7 @@
 # Nodesploit
 
 Node Reverse Shell Control
-NodeSploit, is a Trojan horse or remote access Trojan that allows the owner of the program to control the computer of the end user. It was made by NodeJS
+NodeSploit, is a Trojan horse or remote access Trojan that allows the owner of the program to control the computer of the end user. It was made with NodeJS
 #### Build Setup
 
 ``` bash

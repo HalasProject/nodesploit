@@ -1,12 +1,13 @@
 const state = {
   listen: false,
-  ip:null,
+  ip: null,
   port: null,
+  childs: [],
 };
 
 const mutations = {
   LISTENED_ON(state, connection) {
-    state.ip = connection.ip
+    state.ip = connection.ip;
     state.listen = true;
     state.port = connection.port;
   },
@@ -14,6 +15,22 @@ const mutations = {
     state.listen = false;
     state.ip = null;
     state.port = null;
+  },
+  NEW_CHILD(state, socket) {
+    state.childs.push(socket);
+  },
+  REMOVE_CHILD(state, id) {
+    var removeIndex = state.childs
+      .map(function(item) {
+        return item.id;
+      })
+      .indexOf(id);
+    state.childs.splice(removeIndex, 1);
+
+    // Filter in array doesnt work for me !! 
+    // state.childs = state.childs.filter(function(child) {
+    //   return child.id !== id;
+    // });
   },
 };
 
@@ -27,6 +44,9 @@ const getters = {
   ip(state) {
     return state.ip;
   },
+  childs(state) {
+    return state.childs;
+  },
 };
 
 const actions = {
@@ -35,6 +55,12 @@ const actions = {
   },
   STOPLISTEN({ commit }) {
     commit("LISTENED_OFF");
+  },
+  ADD_CHILD({ commit }, child) {
+    commit("NEW_CHILD", child);
+  },
+  REMOVE_CHILD({ commit }, id) {
+    commit("REMOVE_CHILD", id);
   },
 };
 

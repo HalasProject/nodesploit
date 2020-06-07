@@ -1,8 +1,11 @@
 <template>
   <v-app id="inspire">
-    <sidebar :drawer="openside"></sidebar>
+    <v-navigation-drawer v-model="drawer" app clipped>
+      <sidebar></sidebar>
+    </v-navigation-drawer>
+
     <v-app-bar app clipped-left>
-      <v-app-bar-nav-icon @click.stop="openside = !openside"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <!-- <img width="35px" height="35px" src="@/assets/nodesploit.png"/> -->
 
       <v-icon :color="$store.getters.is_open ? 'green darken-2' : ''">mdi-nodejs</v-icon>
@@ -34,10 +37,10 @@
       </v-btn>
     </v-app-bar>
 
-    <v-content class="mx-auto">
-      <v-container class="fill-height" fluid>
+    <v-content >
+      <keep-alive>
         <router-view></router-view>
-      </v-container>
+      </keep-alive>
     </v-content>
 
     <v-footer app>
@@ -54,9 +57,6 @@ export default {
   components: {
     sidebar
   },
-  props: {
-    source: String
-  },
   methods: {
     closeapp: () => {
       ipcRenderer.send("close-app");
@@ -69,18 +69,14 @@ export default {
     }
   },
   data: () => ({
-    openside: null
+    drawer: null,
+    count: 0
   }),
   created() {
-    console.log('created')
     if (this.$store.getters.is_open) {
       ipcRenderer.invoke("serverlisten", {
-        port: this.$store.getters.port,
-        ip: this.$store.getters.ip
-      });
-    } else {
-      ipcRenderer.on("listened", (event, port) => {
-        this.$store.dispatch("LISTENED", port);
+        ip: this.$store.getters.ip,
+        port: this.$store.getters.port
       });
     }
   },
@@ -91,6 +87,9 @@ export default {
         text: `These documents refer to the latest version of vuesax (4.0+),
             to see the documents of the previous versions you can do it here 👉 Vuesax3.x`
       });
+    });
+    ipcRenderer.on("listened", (event, port) => {
+      this.$store.dispatch("LISTENED", port);
     });
   }
 };

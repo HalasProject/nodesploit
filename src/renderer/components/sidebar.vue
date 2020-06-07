@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="drawer" app clipped>
+  <div>
     <v-list>
       <v-list-item link to="/">
         <v-list-item-action>
@@ -40,7 +40,7 @@
 
     <v-list>
       <v-subheader class="mt-4 grey--text text--darken-1">VICTIME</v-subheader>
-      <template v-if="victimes.length >= 1">
+      <template v-if="victimes != 'undefined'">
         <v-list-item
           v-for="victime in victimes"
           :key="`${victime.id ? victime.id : ''}`"
@@ -50,34 +50,33 @@
           <v-list-item-action>
             <v-icon>mdi-account-cowboy-hat</v-icon>
           </v-list-item-action>
-          <v-list-item-title v-text="victime.id"></v-list-item-title>
+          <v-list-item-title v-text="victime.ip"></v-list-item-title>
         </v-list-item>
       </template>
       <v-container v-else>
         <div class="font-weight-light mt-4 text-center">EMPTY LIST</div>
       </v-container>
     </v-list>
-  </v-navigation-drawer>
+  </div>
 </template>
 
 
 <script>
 import { ipcRenderer } from "electron";
 export default {
-  props: ["drawer"],
   data() {
     return {
-      victimes: []
+      victimes: this.$store.getters.childs
     };
   },
+  computed: {},
   mounted() {
     ipcRenderer.on("newConnection", (event, socket) => {
-      this.victimes.push({ id: socket.id, ip: socket.ip });
+      this.$store.dispatch("ADD_CHILD", { id: socket.id, ip: socket.ip });
     });
     ipcRenderer.on("slaveQuitted", (event, id) => {
-      this.victimes = this.victimes.filter(function(obj) {
-        return obj.id !== id;
-      });
+      console.log("enfant partie");
+      this.$store.dispatch("REMOVE_CHILD", id);
     });
   }
 };

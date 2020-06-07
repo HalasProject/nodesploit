@@ -1,78 +1,74 @@
 <template>
-  <div>
-    <h1 class="display-4 font-weight-black">PAYLOAD</h1>
-    <v-container>
-      <form>
-        <v-row>
-          <v-col cols="3" sm="6" md="3">
-            <v-text-field
-              v-model="ip"
-              :error-messages="ipErrors"
-              label="IP Adresse"
-              required
-              @input="$v.ip.$touch()"
-              @blur="$v.ip.$touch()"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="3" sm="6" md="3">
-            <v-text-field
-              v-model="port"
-              :error-messages="portErrors"
-              label="Port"
-              required
-              @input="$v.port.$touch()"
-              @blur="$v.port.$touch()"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="3" sm="6" md="3">
-            <v-select v-model="sys" :items="os" label="Platforme" required></v-select>
-          </v-col>
-          <v-col cols="3" sm="6" md="3">
-            <v-select
-              v-model="shell"
-              :items="shells"
-              :rules="[v => !!v || 'Shell is required']"
-              label="Shell"
-              required
-            ></v-select>
-          </v-col>
-        </v-row>
-      </form>
-    </v-container>
+  <v-container class="fill-height mx-auto" fluid>
+    <div class="mx-auto">
+      <h1 class="display-4 font-weight-black">PAYLOAD</h1>
+      <v-container>
+        <form>
+          <v-row>
+            <v-col xs="12" sm="6" md="3">
+              <v-text-field
+                v-model="ip"
+                :error-messages="ipErrors"
+                label="IP Adresse"
+                required
+                @input="$v.ip.$touch()"
+                @blur="$v.ip.$touch()"
+              ></v-text-field>
+            </v-col>
+            <v-col xs="12" sm="6" md="3">
+              <v-text-field
+                v-model="port"
+                :error-messages="portErrors"
+                label="Port"
+                required
+                @input="$v.port.$touch()"
+                @blur="$v.port.$touch()"
+              ></v-text-field>
+            </v-col>
+            <v-col xs="12" sm="6" md="3">
+              <v-select v-model="sys" :items="os" label="Platforme" required></v-select>
+            </v-col>
+            <v-col xs="12" sm="6" md="3">
+              <v-select v-model="shell" :items="shells" label="Shell" required></v-select>
+            </v-col>
+          </v-row>
+        </form>
+      </v-container>
 
-    <v-container>
-      <v-tabs v-model="tab">
-        <v-tabs-slider></v-tabs-slider>
+      <v-container>
+        <v-tabs v-model="tab">
+          <v-tabs-slider></v-tabs-slider>
 
-        <v-tab :key="1" :href="`#plainJs`">Plain JS</v-tab>
-        <v-tab :key="2" :href="`#obfuscedJs`">Obfusced</v-tab>
+          <v-tab :key="1" :href="`#plainJs`">Plain JS</v-tab>
+          <v-tab :key="2" :href="`#obfuscedJs`">Obfusced</v-tab>
 
-        <v-tab-item :key="1" value="plainJs">
-          <v-card flat tile>
-            <code v-html="payload" class="py-4" style="width: 100%;"></code>
-          </v-card>
-        </v-tab-item>
-        <v-tab-item :key="2" value="obfuscedJs">
-          <v-card flat tile></v-card>
-          <code v-html="obfusced" class="py-4 px-4" style="width: 100%;"></code>
-        </v-tab-item>
-      </v-tabs>
-    </v-container>
+          <v-tab-item :key="1" value="plainJs">
+            <v-card flat tile>
+              <code v-html="payload" class="py-4" style="width: 100%;"></code>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item :key="2" value="obfuscedJs">
+            <v-card flat tile></v-card>
+            <code v-html="obfusced" class="py-4 px-4" style="width: 100%;"></code>
+          </v-tab-item>
+        </v-tabs>
+      </v-container>
 
-    <v-container class="d-flex justify-end">
-      <template >
-        <v-btn class="mr-4" :disabled="this.$v.$invalid" :loading="buildingjs" @click="buildjs">
-          Save JS
-          <v-icon right dark>mdi-language-javascript</v-icon>
-        </v-btn>
-        <v-btn :disabled="this.$v.$invalid" class="mr-4" @click="buildexe">
-          Build Exe
-          <v-icon right dark>mdi-wrench</v-icon>
-        </v-btn>
-        <v-btn color="error" class="mr-4" @click="reset">Reset</v-btn>
-      </template>
-    </v-container>
-  </div>
+      <v-container class="d-flex justify-end">
+        <template>
+          <v-btn class="mr-4" :disabled="this.$v.$invalid" :loading="buildingjs" @click="buildjs">
+            Save JS
+            <v-icon right dark>mdi-language-javascript</v-icon>
+          </v-btn>
+          <v-btn :disabled="this.$v.$invalid" class="mr-4" @click="buildexe">
+            Build Exe
+            <v-icon right dark>mdi-wrench</v-icon>
+          </v-btn>
+          <v-btn color="error" class="mr-4" @click="reset">Reset</v-btn>
+        </template>
+      </v-container>
+    </div>
+  </v-container>
 </template>
 
 
@@ -237,7 +233,7 @@ export default {
       function filedone() {
         self.buildingjs = false;
       }
-      dialog.showSaveDialog(WIN, options).then((file) => {
+      dialog.showSaveDialog(WIN, options).then(file => {
         if (file.canceled) {
         } else {
           self.buildingjs = true;

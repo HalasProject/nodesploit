@@ -1,7 +1,12 @@
-# nodesploit
+<p align="center">
+   <img width="170px" height="160px" src="https://i.ibb.co/txm3d2q/nodesploit.png" />
+</p>
 
-> Node Reverse Shell Control
 
+# Nodesploit
+
+Node Reverse Shell Control
+NodeSploit, is a Trojan horse or remote access Trojan that allows the owner of the program to control the computer of the end user. It was made by NodeJS
 #### Build Setup
 
 ``` bash
@@ -19,4 +24,7 @@ npm run build
 
 ---
 
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[45a3e22](https://github.com/SimulatedGREG/electron-vue/tree/45a3e224e7bb8fc71909021ccfdcfec0f461f634) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+<p align="center">
+   <img src="https://i.ibb.co/zHdKpsJ/salahbentayeb.png" />
+</p>
+

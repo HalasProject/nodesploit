@@ -11,12 +11,6 @@ const opts = {
     iconfont: "mdi",
   },
   theme: {
-    // options: {
-    //   themeCache: {
-    //     get: key => localStorage.getItem(key),
-    //     set: (key, value) => localStorage.setItem(key, value),
-    //   },
-    // },
     themes: {
       dark:false
     },

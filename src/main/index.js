@@ -1,6 +1,6 @@
 const { app, ipcMain, Notification } = require("electron");
 
-import { mainWindow } from "./window";
+import { mainWindow, loadingWindow } from "./window";
 import { nanoid } from "nanoid";
 
 import store from "@/store";
@@ -18,6 +18,7 @@ if (process.env.NODE_ENV !== "development") {
 class Nodesploit {
   constructor() {
     this.mainWin = null;
+    this.loadWin = null;
     this.server = null;
     this.sockets = [];
   }
@@ -29,6 +30,7 @@ class Nodesploit {
 
   lifecycle() {
     app.on("ready", () => {
+      this.loadWin = loadingWindow();
       this.createMainWindow();
     });
 
@@ -47,6 +49,10 @@ class Nodesploit {
 
   createMainWindow() {
     this.mainWin = mainWindow();
+    this.mainWin.webContents.on("did-finish-load", () => {
+      this.mainWin.show();
+      this.loadWin.destroy();
+    });
     this.mainWin.on("closed", () => {
       this.mainWin = null;
     });
@@ -56,9 +62,9 @@ class Nodesploit {
     const net = require("net");
     this.server = new net.Server();
 
-    process.on('SIGTERM', ()=>{
-      this.server.close()
-    })
+    process.on("SIGTERM", () => {
+      this.server.close();
+    });
 
     this.server.on("listening", () => {
       var notif = new Notification({
@@ -141,8 +147,10 @@ class Nodesploit {
     return this.server.listening;
   }
 
-  async closeServer() {
-    await this.server.close();
+  closeServer() {
+    if (this.server.close()) {
+      return true;
+    }
   }
 
   ipc() {

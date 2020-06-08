@@ -12,7 +12,6 @@ export default {
     return {
       process: {
         pid: process.pid,
-        mem: process.memoryUsage()
       }
     };
   }

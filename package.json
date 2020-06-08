@@ -16,17 +16,12 @@
   },
   "main": "./dist/electron/main.js",
   "dependencies": {
-    "axios": "^0.18.0",
-    "debug": "^4.1.1",
     "ip": "^1.1.5",
     "nanoid": "^3.1.9",
-    "netcat": "^1.5.0",
-    "process-stats": "^3.4.2",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuelidate": "^0.7.5",
-    "vuesax": "^4.0.1-alpha.20",
     "vuetify": "^2.2.11",
     "vuex": "^3.0.1",
     "vuex-electron": "^1.0.0"

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Node Reverse Shell Control",
   "author": "Salah Eddine <bentayebtech@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
@@ -107,7 +108,6 @@
       "icon": "build/icons"
     }
   },
-  "license": "MIT",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"

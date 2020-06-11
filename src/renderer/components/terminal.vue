@@ -1,20 +1,14 @@
 <template>
-  <v-container class="pt-10">
-    <div
-      ref="terminal"
-      :style="{
-            'color':this.$vuetify.secondary}"
-      @click="$refs.cmd.focus();"
-      id="container"
-    >
+  <v-container @click="$refs.cmd.focus();" class="pt-10">
+    <div ref="terminal" :style="{'color':this.$vuetify.secondary}" id="container">
       <div class="mb-8">
         <p>
           <img
             align="left"
+            class="mr-8"
             src="https://seeklogo.com/images/N/nodejs-logo-FBE122E377-seeklogo.com.png"
             width="86"
             height="100"
-            class="mr-8"
           />
         </p>
         <h2 style="letter-spacing: 4px" class="display-1">{{header}} : {{socket.id}}</h2>

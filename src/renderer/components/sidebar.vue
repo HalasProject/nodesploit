@@ -10,7 +10,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item link to="server">
+      <v-list-item link to="/server">
         <v-list-item-action>
           <v-icon>mdi-lan-connect</v-icon>
         </v-list-item-action>
@@ -19,7 +19,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item link to="payload">
+      <v-list-item link to="/payload">
         <v-list-item-action>
           <v-icon>mdi-skull-crossbones</v-icon>
         </v-list-item-action>
@@ -28,7 +28,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item link>
+      <v-list-item link to="/settings">
         <v-list-item-action>
           <v-icon>mdi-cog</v-icon>
         </v-list-item-action>
@@ -78,9 +78,9 @@ export default {
     }
   },
   mounted() {
-    ipcRenderer.on("newConnection", (event, socket) => {
-      this.$store.dispatch("ADD_CHILD", { id: socket.id, ip: socket.ip });
-    });
+    // ipcRenderer.on("newConnection", (event, socket) => {
+    //   this.$store.dispatch("ADD_CHILD", { id: socket.id, ip: socket.ip });
+    // });
     ipcRenderer.on("slaveQuitted", (event, id) => {
       this.$store.dispatch("REMOVE_CHILD", id);
     });

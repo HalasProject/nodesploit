@@ -38,9 +38,9 @@
     </v-app-bar>
 
     <v-content>
-      <keep-alive>
+     
         <router-view></router-view>
-      </keep-alive>
+     
     </v-content>
 
     <v-footer app>
@@ -73,19 +73,30 @@ export default {
     count: 0
   }),
   created() {
-    if (this.$store.getters.is_open) {
+    window.addEventListener("close", () => {
+      if (this.$store.getters.is_open) {
+        if (this.$store.getters.startup == false) {
+          this.$store.dispatch("STOPLISTEN");
+        }
+      }
+    });
+
+    if (this.$store.getters.startup && this.$store.getters.is_open) {
       ipcRenderer.invoke("serverlisten", {
         ip: this.$store.getters.ip,
         port: this.$store.getters.port
       });
     }
+
+    
   },
   mounted() {
     ipcRenderer.on("closeConnection", (event, socket) => {});
     ipcRenderer.on("listened", (event, port) => {
       this.$store.dispatch("LISTENED", port);
     });
-  }
+  },
+  beforeDestroy() {}
 };
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-tabs v-model="tab" centered icons-and-text>
+    <v-tabs :show-arrows="true" v-model="tab" centered icons-and-text fixed-tabs>
       <v-tabs-slider></v-tabs-slider>
 
       <v-tab href="#tab-1">
@@ -53,7 +53,7 @@ export default {
   }),
   methods: {
     cmd(value) {
-      ipcRenderer.send("cmd", value);
+      ipcRenderer.send("cmd", {msg:value,id:this.socket_id});
     }
   },
   created() {

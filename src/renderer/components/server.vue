@@ -1,46 +1,39 @@
 <template>
-    <v-container class="fill-height" fluid>
-      <div class="mx-auto">
-        <h1 class="display-4 font-weight-black mb-4">SERVER</h1>
+  <v-container class="fill-height" fluid>
+    <div class="mx-auto">
+      <h1 class="display-4 font-weight-black mb-4">SERVER</h1>
 
-        <template v-if="serverOpen">
-          <div class="text-center">
-            <h3 class="headline font-weight-thin mt-4">SERVER LISTEN IN PORT {{serverPort}}</h3>
-            <v-btn @click="stopListen()" class="mt-4" large color="error">STOP</v-btn>
-          </div>
-        </template>
-        <template v-else>
-          <form>
-            <v-text-field
-              v-model="ip"
-              :error-messages="ipErrors"
-              label="IP Adresse"
-              required
-              @input="$v.ip.$touch()"
-              @blur="$v.ip.$touch()"
-            ></v-text-field>
-            <v-text-field
-              v-model="port"
-              :error-messages="portErrors"
-              label="Port"
-              required
-              @input="$v.port.$touch()"
-              @blur="$v.port.$touch()"
-            ></v-text-field>
-            <v-checkbox
-              v-model="remember"
-              label="Remember this config?"
-              required
-              @change="$v.remember.$touch()"
-              @blur="$v.remember.$touch()"
-            ></v-checkbox>
+      <template v-if="serverOpen">
+        <div class="text-center">
+          <h3 class="headline font-weight-thin mt-4">SERVER LISTEN IN PORT {{serverPort}}</h3>
+          <v-btn @click="stopListen()" class="mt-4" large color="error">STOP</v-btn>
+        </div>
+      </template>
+      <template v-else>
+        <form>
+          <v-text-field
+            v-model="ip"
+            :error-messages="ipErrors"
+            label="IP Adresse"
+            required
+            @input="$v.ip.$touch()"
+            @blur="$v.ip.$touch()"
+          ></v-text-field>
+          <v-text-field
+            v-model="port"
+            :error-messages="portErrors"
+            label="Port"
+            required
+            @input="$v.port.$touch()"
+            @blur="$v.port.$touch()"
+          ></v-text-field>
 
-            <v-btn class="mr-4" @click="submit">Listen</v-btn>
-            <v-btn @click="clear">clear</v-btn>
-          </form>
-        </template>
-      </div>
-    </v-container>
+          <v-btn class="mr-4" @click="submit">Listen</v-btn>
+          <v-btn @click="clear">clear</v-btn>
+        </form>
+      </template>
+    </div>
+  </v-container>
 </template>
 
 <script>
@@ -56,8 +49,7 @@ import { ipcRenderer } from "electron";
 export default {
   data: () => ({
     ip: require("ip").address(),
-    port: "",
-    remember: false
+    port: ""
   }),
   validations: {
     ip: {

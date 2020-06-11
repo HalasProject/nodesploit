@@ -25,6 +25,11 @@ export default new Router({
       name:'victime',
       component: require('@/components/victime').default
     },
+     {
+      path:'/settings',
+      name:'settings',
+      component: require('@/components/settings').default
+    },
     {
       path: '*',
       redirect: '/'

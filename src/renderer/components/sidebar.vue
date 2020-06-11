@@ -41,19 +41,22 @@
     <v-list>
       <v-subheader class="mt-4 grey--text text--darken-1">VICTIME</v-subheader>
       <template v-if="victimes != 'undefined'">
-        <v-list-item
-          v-for="victime in victimes"
-          :key="`${victime.id ? victime.id : ''}`"
-          link
-          :to="`victime/${victime.id}`"
-        >
+        <v-list-item v-for="victime in victimes" :key="`${victime.id ? victime.id : ''}`" link>
           <v-list-item-action>
             <v-icon>mdi-account-cowboy-hat</v-icon>
           </v-list-item-action>
-          <v-list-item-title v-text="victime.ip"></v-list-item-title>
+          <v-list-item-title>
+            <router-link class="text--black" :to="`victime/${victime.id}`">
+              <div class="float-left">{{victime.ip}}</div>
+            </router-link>
+
+            <div @click="deleteme(victime.id)" class="float-right">
+              <v-icon>mdi-delete</v-icon>
+            </div>
+          </v-list-item-title>
         </v-list-item>
       </template>
-      <v-container v-else>
+      <v-container v-show="victimes.length == 0">
         <div class="font-weight-light mt-4 text-center">EMPTY LIST</div>
       </v-container>
     </v-list>
@@ -69,13 +72,16 @@ export default {
       victimes: this.$store.getters.childs
     };
   },
-  computed: {},
+  methods: {
+    deleteme(victime_id) {
+      this.$store.dispatch("REMOVE_CHILD", victime_id);
+    }
+  },
   mounted() {
     ipcRenderer.on("newConnection", (event, socket) => {
       this.$store.dispatch("ADD_CHILD", { id: socket.id, ip: socket.ip });
     });
     ipcRenderer.on("slaveQuitted", (event, id) => {
-      console.log("enfant partie");
       this.$store.dispatch("REMOVE_CHILD", id);
     });
   }

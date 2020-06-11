@@ -26,52 +26,45 @@
         <v-icon>mdi-monitor-screenshot</v-icon>
       </v-tab>
     </v-tabs>
-    <v-container>
+   
       <v-tabs-items v-model="tab">
-        <v-tab-item :key="3" :value="'tab-3'">
+        <v-tab-item :key="3" :value="'tab-3'" id="tab-3">
           <v-card flat>
-            <v-text-field v-model="inputs" @keyup.enter="cmd"></v-text-field>
-            <code id="terminal" v-html="cli" class="py-4 px-4" style="width: 100%;"></code>
+            <nsterminal :socket="{id:this.socket_id}" :shell_output="output" @terminal_cmd="cmd"></nsterminal>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
-    </v-container>
+   
   </div>
 </template>
 
 <script>
 import { ipcRenderer } from "electron";
-
+import terminal from "./terminal";
 export default {
+  components: {
+    nsterminal: terminal
+  },
   data: () => ({
     tab: null,
-    text:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     socket_id: "",
     inputs: "",
-    cli: "Test "
+    output: ""
   }),
   methods: {
-    cmd() {
-      this.cli = "";
-      ipcRenderer.send("cmd", this.inputs);
+    cmd(value) {
+      ipcRenderer.send("cmd", value);
     }
   },
   created() {
     ipcRenderer.on("datarec", (event, res) => {
-      this.cli += res;
+      this.output =  res ;
     });
     this.socket_id = this.$router.currentRoute.params.id;
   }
 };
 </script>
 
-<style>
-#terminal {
-  background-color: #000;
-  border: 1px solid #000;
-  color: #00ff00;
-  padding: 8px;
-  font-family: courier new;
-}
+ <style>
+
 </style>

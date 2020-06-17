@@ -1,5 +1,6 @@
 <p align="center"> <img width="170px" height="160px" src="https://i.ibb.co/txm3d2q/nodesploit.png">
     </p>
+ 
 # Nodesploit
 
 Node Reverse Shell Control
@@ -85,6 +86,5 @@ npm run pack
 
 ---
 
-<p align="center">
-   <img src="https://i.ibb.co/zHdKpsJ/salahbentayeb.png" />
-</p>
+<p align="center"> <img src="https://i.ibb.co/zHdKpsJ/salahbentayeb.png">
+    </p>

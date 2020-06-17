@@ -20,11 +20,7 @@ const mutations = {
     state.childs.push(socket);
   },
   REMOVE_CHILD(state, id) {
-    var removeIndex = state.childs
-      .map(function(item) {
-        return item.id;
-      })
-      .indexOf(id);
+    var removeIndex = state.childs.map((child) => child.id).indexOf(id);
     if (removeIndex != -1) {
       state.childs.splice(removeIndex, 1);
     }

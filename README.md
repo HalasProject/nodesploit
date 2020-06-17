@@ -1,6 +1,8 @@
-<p align="center"><img width="170px" height="160px" src="https://i.ibb.co/txm3d2q/nodesploit.png" /></p>
+<p align="center">
+  <img width="170px" height="160px" src="https://i.ibb.co/txm3d2q/nodesploit.png" />
+</p>
 
-# Nodesploit
+# Nodesploit
 
 Node Reverse Shell Control
 NodeSploit, is a Trojan horse or remote access Trojan that allows the owner of the program to control the computer of the end user. It was made with NodeJS
@@ -57,8 +59,7 @@ NodeSploit, is a Trojan horse or remote access Trojan that allows the
     - [ ] Exploit Finder
     - [ ] Add flags for victime (dnslookup)
 
-#### Build Setup
-
+## Build Setup
 
 ``` bash
 # install dependencies
@@ -86,4 +87,6 @@ npm run pack
 
 ---
 
-<p align="center"><img src="https://i.ibb.co/zHdKpsJ/salahbentayeb.png" /></p>
+<p align="center">
+   <img src="https://i.ibb.co/zHdKpsJ/salahbentayeb.png" />
+</p>

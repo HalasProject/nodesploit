@@ -23,7 +23,7 @@ export default new Router({
     {
       path:'/victime/:id',
       name:'victime',
-      component: require('@/components/victime').default
+      component: require('@/components/victime/victime').default
     },
      {
       path:'/settings',

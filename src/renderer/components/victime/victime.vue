@@ -58,7 +58,10 @@ export default {
   },
   created() {
     ipcRenderer.on("datarec", (event, res) => {
-      this.output =  res ;
+      console.log(res)
+      if(res.id == this.$router.currentRoute.params.id){
+        this.output = res.data ;
+      }
     });
     this.socket_id = this.$router.currentRoute.params.id;
   }

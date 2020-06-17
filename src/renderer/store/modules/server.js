@@ -25,7 +25,9 @@ const mutations = {
         return item.id;
       })
       .indexOf(id);
-    state.childs.splice(removeIndex, 1);
+    if (removeIndex != -1) {
+      state.childs.splice(removeIndex, 1);
+    }
 
     // Filter in array doesnt work for me !!
     // state.childs = state.childs.filter(function(child) {

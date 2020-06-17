@@ -50,11 +50,30 @@
               <div class="float-left">{{victime.ip}}</div>
             </router-link>
 
-            <div @click="deleteme(victime.id)" class="float-right">
+            <div @click="selectedVictime = victime.id;dialog = true;" class="float-right">
               <v-icon>mdi-delete</v-icon>
             </div>
           </v-list-item-title>
         </v-list-item>
+
+        <v-dialog v-model="dialog" persistent max-width="290">
+          <v-card>
+            <v-card-title class="headline">Confirm this action</v-card-title>
+            <v-card-text>
+              Are you sure to delete the victim and destroy the connection between the socket and your server ?
+              <br />once you confirm, the bridge between you and the victim will be erased forever.
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="selectedVictime = false;dialog = false;"
+              >Abort</v-btn>
+              <v-btn color="green darken-1" text @click="deleteme">Delete</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </template>
       <v-container v-show="victimes.length == 0">
         <div class="font-weight-light mt-4 text-center">EMPTY LIST</div>
@@ -66,17 +85,22 @@
 
 <script>
 import { ipcRenderer } from "electron";
+
 export default {
   data() {
     return {
-      victimes: this.$store.getters.childs
+      dialog: false,
+      victimes: this.$store.getters.childs,
+      selectedVictime: ""
     };
   },
   methods: {
-    deleteme(victime_id) {
-      ipcRenderer.send('delete_victime',victime_id)
+    deleteme() {
+      ipcRenderer.send("delete_victime", this.selectedVictime);
+      this.selectedVictime = "";
+      this.dialog = false;
     }
-  },
+  }
 };
 </script>
 

@@ -74,17 +74,9 @@ export default {
   },
   methods: {
     deleteme(victime_id) {
-      this.$store.dispatch("REMOVE_CHILD", victime_id);
+      ipcRenderer.send('delete_victime',victime_id)
     }
   },
-  mounted() {
-    // ipcRenderer.on("newConnection", (event, socket) => {
-    //   this.$store.dispatch("ADD_CHILD", { id: socket.id, ip: socket.ip });
-    // });
-    ipcRenderer.on("slaveQuitted", (event, id) => {
-      this.$store.dispatch("REMOVE_CHILD", id);
-    });
-  }
 };
 </script>
 

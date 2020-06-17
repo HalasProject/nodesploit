@@ -36,7 +36,7 @@
             <v-card-text>This Software provides information that could be used to assess the security of a machine, website, network. Do not use what you learn here to test (or worse, attack) without the permission of the target.</v-card-text>
           </v-card>
           <v-divider></v-divider>
-          <v-card class="mt-10">
+          <v-card class="mt-10 pb-12">
             <v-card-title>Server Information</v-card-title>
             <v-card-subtitle>Please readme before starting</v-card-subtitle>
             <v-row class="mx-auto text-center">
@@ -58,7 +58,7 @@
                 <v-icon :x-large="true" v-else>mdi-power-plug-off</v-icon>
               </v-col>
             </v-row>
-            <v-card-text>This Software provides information that could be used to assess the security of a machine, website, network. Do not use what you learn here to test (or worse, attack) without the permission of the target.</v-card-text>
+           
           </v-card>
         </v-col>
       </v-row>

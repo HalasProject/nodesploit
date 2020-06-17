@@ -38,9 +38,7 @@
     </v-app-bar>
 
     <v-content>
-     
         <router-view></router-view>
-     
     </v-content>
 
     <v-footer app>
@@ -91,7 +89,6 @@ export default {
     
   },
   mounted() {
-    ipcRenderer.on("closeConnection", (event, socket) => {});
     ipcRenderer.on("listened", (event, port) => {
       this.$store.dispatch("LISTENED", port);
     });

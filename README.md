@@ -58,33 +58,29 @@ NodeSploit, is a Trojan horse or remote access Trojan that allows the
     - [ ] Exploit Finder
     - [ ] Add flags for victime (dnslookup)
 
-## Build Setup
 
-``` bash
-# install dependencies
-npm install
+## Project setup
+```
+npm install
+```
 
-# serve with hot reload at localhost:9080
-npm run dev
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-# build electron application for production
-npm run build
+### Compiles and minifies for production
+```
+npm run build
+```
 
-# build web application for production
-npm run build:web
-
-#Pack for renderer 
-npm run pack:renderer
-
-#Pack for main
-npm run pack:main
-
-#Pack for main & renderer
-npm run pack
-
+### Lints and fixes files
+```
+npm run lint
 ```
 
 ---
 
 <p align="center"> <img src="https://i.ibb.co/zHdKpsJ/salahbentayeb.png">
     </p>
+

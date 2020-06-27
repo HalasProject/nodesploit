@@ -79,6 +79,11 @@ npm run electron:build
 npm run lint
 ```
 
+### Inspect the Webpack config.
+```
+npm run inpsect
+```
+
 ---
 
 <p align="center"> <img src="https://i.ibb.co/zHdKpsJ/salahbentayeb.png">

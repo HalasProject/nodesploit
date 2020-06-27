@@ -64,14 +64,14 @@ NodeSploit, is a Trojan horse or remote access Trojan that allows the
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Compiles and hot-reloads for electron development
 ```
-npm run serve
+npm run electron:serve
 ```
 
-### Compiles and minifies for production
+### Compiles and minifies for electron production
 ```
-npm run build
+npm run electron:build
 ```
 
 ### Lints and fixes files

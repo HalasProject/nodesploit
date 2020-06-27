@@ -7,12 +7,12 @@
   "license": "MIT",
   "main": "background.js",
   "scripts": {
+    "electron:serve": "vue-cli-service electron:serve",
+    "electron:build": "vue-cli-service electron:build",
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build --report",
     "lint": "vue-cli-service lint",
     "inspect": "vue-cli-service inspect",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },

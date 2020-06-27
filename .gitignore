@@ -23,3 +23,6 @@ pnpm-debug.log*
 
 #Electron-builder output
 /dist_electron
+
+# webpack inspect npm run inspect
+webpack.js

@@ -47,8 +47,8 @@
 
 <script>
 import { ipcRenderer } from 'electron'
-import terminal from './terminal'
-import information from './information'
+import terminal from '@R/components/victime/terminal'
+import information from '@R/components/victime/information'
 export default {
   components: {
     nsterminal: terminal,

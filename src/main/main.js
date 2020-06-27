@@ -1,46 +1,12 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain, Notification } from 'electron'
-import store from '@/store'
+import { app, ipcMain, Notification } from 'electron'
+import store from '@/renderer/store'
 import { nanoid } from 'nanoid'
-import {
-  createProtocol,
-  installVueDevtools
-} from 'vue-cli-plugin-electron-builder/lib'
+import { installVueDevtools } from 'vue-cli-plugin-electron-builder/lib'
+import { createMainWindow } from './window'
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
-
-// Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
-])
-
-// Creation of BrowserWindow
-function createWindow () {
-  // Create the browser window.
-  var win = new BrowserWindow({
-    height: 563,
-    width: 1000,
-    show: false,
-    frame: true,
-    movable: true,
-    useContentSize: true,
-    webPreferences: {
-      nodeIntegration: true
-    }
-  })
-
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
-    win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
-  } else {
-    createProtocol('app')
-    // Load the index.html when not in development
-    win.loadURL('app://./index.html')
-  }
-
-  return win
-}
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
@@ -86,7 +52,7 @@ class Nodesploit {
       }
 
       // this.loadWin = loadingWindow()
-      this.mainWin = createWindow()
+      this.mainWin = createMainWindow()
       this.mainWin.webContents.on('did-finish-load', () => {
         this.mainWin.show()
         // this.loadWin.destroy()
@@ -110,7 +76,7 @@ class Nodesploit {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (this.mainWin === null) {
-        this.mainWin = createWindow()
+        this.mainWin = createMainWindow()
       }
     })
   }

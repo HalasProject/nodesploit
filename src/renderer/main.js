@@ -1,13 +1,13 @@
 
 import Vue from 'vue'
 
-import App from './App'
-import router from './router'
-import store from './store'
+import App from '@R/App'
+import router from '@R/router'
+import store from '@R/store'
 
 import Vuelidate from 'vuelidate'
-import './registerServiceWorker'
-import vuetify from './plugins/vuetify'
+import '@R/registerServiceWorker'
+import vuetify from '@R/plugins/vuetify'
 
 Vue.config.productionTip = false
 

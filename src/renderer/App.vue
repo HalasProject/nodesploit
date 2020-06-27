@@ -49,7 +49,7 @@
 
 <script>
 import { ipcRenderer } from 'electron'
-import sidebar from '@/components/sidebar'
+import sidebar from '@R/components/sidebar'
 export default {
   name: 'nodesploit',
   components: {

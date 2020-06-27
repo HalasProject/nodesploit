@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import server from '@R/views/server.vue'
+import payload from '@R/views/payload.vue'
+import victime from '@R/views/victime.vue'
+import settings from '@R/views/settings.vue'
+import home from '@R/views/home.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -9,28 +15,28 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: require('@/components/home').default
+      component: home
     },
     {
       path: '/server',
       name: 'server',
-      component: require('@/components/server').default
+      component: server
     },
     {
       path: '/payload',
       name: 'payload',
-      component: require('@/components/payload').default
+      component: payload
     },
     {
       path: '/victime/:socket_id',
       name: 'victime',
-      component: require('@/components/victime/victime').default,
+      component: victime,
       props: true
     },
     {
       path: '/settings',
       name: 'settings',
-      component: require('@/components/settings').default
+      component: settings
     },
     {
       path: '*',

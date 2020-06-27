@@ -5,14 +5,14 @@
   "description": "Node Reverse Shell Control",
   "author": "Salah Eddine <bentayebtech@gmail.com>",
   "license": "MIT",
-  "main": "background.js",
+  "main": "./src/main/main.js",
   "scripts": {
     "electron:serve": "vue-cli-service electron:serve",
     "electron:build": "vue-cli-service electron:build",
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build --report",
     "lint": "vue-cli-service lint",
-    "inspect": "vue-cli-service inspect",
+    "inspect": "vue-cli-service inspect >> webpack.js",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },

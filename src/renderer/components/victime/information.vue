@@ -27,12 +27,12 @@ export default {
     }
   },
   mounted () {
-    ipcRenderer.send('getInformation', this.socket.id)
+    // ipcRenderer.send('getInformation', this.socket.id)
     ipcRenderer.on('systeminfo', (event, data) => {
       console.log(data)
     })
   },
-  dat () {
+  data () {
     return {
       information: []
     }

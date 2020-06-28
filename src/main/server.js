@@ -139,10 +139,12 @@ export class Nodesploit {
           }
           data.toString().includes('hostname') ? (hostname = true) : (hostname = false)
           data.toString().includes('systeminfo /FO CSV') ? (systeminfo = true) : (systeminfo = false)
-          this.mainWin.webContents.send('datarec', {
-            data: data.toString('utf8'),
-            id: socket.id
-          })
+          if (!hostname && !systeminfo) {
+            this.mainWin.webContents.send('datarec', {
+              data: data.toString('utf8'),
+              id: socket.id
+            })
+          }
         })
       }
     })

